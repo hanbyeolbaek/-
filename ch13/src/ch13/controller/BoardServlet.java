@@ -23,6 +23,7 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import ch13.model.BoardDBBean;
 import ch13.model.BoardDataBean;
+import ch13.model.MemberDataBean;
 
 /**
  * Servlet implementation class BoardServlet
@@ -99,12 +100,10 @@ public class BoardServlet extends HttpServlet {
 				
 				BoardDataBean art = new BoardDataBean();
 				
+				//hbbaek.m for login한 사람만 글쓰기
 				art.setNum(Integer.parseInt(multi.getParameter("num")));
-				art.setWriter(multi.getParameter("writer"));
 				art.setSubject(multi.getParameter("subject"));
-				art.setEmail(multi.getParameter("email"));
 				art.setContent(multi.getParameter("content"));
-				art.setPasswd(multi.getParameter("passwd"));
 				art.setRef(Integer.parseInt(multi.getParameter("ref")));
 				art.setRe_step(Integer.parseInt(multi.getParameter("re_step")));
 				art.setRe_level(Integer.parseInt(multi.getParameter("re_level")));
@@ -188,13 +187,16 @@ public class BoardServlet extends HttpServlet {
 				BoardDataBean art = new BoardDataBean();
 				
 				art.setNum(Integer.parseInt(multi.getParameter("num")));
-				art.setWriter(multi.getParameter("writer"));
 				art.setSubject(multi.getParameter("subject"));
-				art.setEmail(multi.getParameter("email"));
 				art.setContent(multi.getParameter("content"));
 				art.setPasswd(multi.getParameter("passwd"));
 				// hbbaek.a for file upload
-				art.setFileName(filename);
+				String cf = art.getFileName();
+				if(cf!=null && !cf.equals("")) {
+					
+				}else {
+					art.setFileName(filename);
+				}
 				
 				BoardDBBean dbPro = BoardDBBean.getInstance();
 				check = dbPro.updateArticle(art);
@@ -228,6 +230,73 @@ public class BoardServlet extends HttpServlet {
 			request.setAttribute("pageNum", pageNum);
 			request.setAttribute("check", check);
 			viewPage = "deletePro.jsp";
+		}
+		
+		//hbbaek.a for login
+		if(action.equals("login.do")) {
+			viewPage = "m_login.jsp";
+		}
+	
+		if(action.contentEquals("loginPro.do")) {
+				String id = request.getParameter("id");
+				String passwd = request.getParameter("passwd");
+				response.setContentType("text/html;charset=UTF-8");
+				try {
+					BoardDBBean dbPro = BoardDBBean.getInstance();
+					String pwd = dbPro.checkIdPw(id);
+					if (pwd == null) {
+						// id를 찾을 수 없음
+						request.setAttribute("checkId", -1);
+						viewPage = "m_login.jsp";
+					} else if (passwd.equals(pwd)) {
+						//id, passwd 동일, 로그인 성공
+						request.setAttribute("checkId", 0);
+						request.getSession().setAttribute("id", id);
+						viewPage = "list.jsp";
+					} else {
+						//passwd가 틀림
+						request.setAttribute("checkId", 1);
+						viewPage = "m_login.jsp";
+						/*
+						 * out.print("<script type=text/javascript>");
+						 * out.print("alert('아이디와 패스워드가 일치하지 않습니다."); out.print("history.back()");
+						 * out.print("</script>");
+						 */
+					}
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+		}
+		
+		if(action.equals("joinForm.do")) {
+			viewPage = "m_joinForm.jsp";
+		}
+		
+		if(action.equals("joinPro.do")) {
+			int check = 0;
+			try {
+				MemberDataBean art = new MemberDataBean();
+				
+				art.setId(request.getParameter("id"));
+				art.setPasswd(request.getParameter("passwd"));
+				art.setDate_number(request.getParameter("date_num"));
+				art.setEmail(request.getParameter("email"));
+				art.setAddress(request.getParameter("address"));
+				art.setTel(request.getParameter("tel"));
+				art.setName(request.getParameter("name"));
+				art.setReg_date(new Timestamp(System.currentTimeMillis()));
+
+				BoardDBBean dbPro = BoardDBBean.getInstance();
+				check = dbPro.joinIdPw(art);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			request.setAttribute("check", check);
+			viewPage = "m_joinPro.jsp";
+		}
+		
+		if(action.equals("main.do")) {
+			viewPage = "m_main.jsp";
 		}
 		
 		RequestDispatcher rDis = request.getRequestDispatcher(viewPage);

@@ -45,24 +45,10 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="70" bgcolor="<%=value_c%>" align="center">이 름</td>
-				<td width="330" align="left">
-					<input type="text" size="10" maxlength="10" name="writer" style="ime-mode: active;">
-					<!--active:한글-->
-				</td>
-			</tr>
-			<tr>
 				<td width="70" bgcolor="<%=value_c%>" align="center">제 목</td>
 				<td width="330" align="left">
 					<input type="text" size="40" maxlength="50" name="subject" value="<%=strV%>" style="ime-mode: active;">
 				</td>
-			</tr>
-			<tr>
-				<td width="70" bgcolor="<%=value_c%>" align="center">Email</td>
-				<td width="330" align="left">
-					<input type="text" size="40" maxlength="30" name="email" style="ime-mode: inactive;">
-				</td>
-				<!--inactive:영문-->
 			</tr>
 			<tr>
 				<td width="70" bgcolor="<%=value_c%>" align="center">내 용</td>
@@ -75,12 +61,6 @@
 				<td width="70" bgcolor="<%=value_c%>" align="center">파일선택</td>
 				<td width="330" align="left">
 					<input type="file" name="selectfile">
-				</td>
-			</tr>
-			<tr>
-				<td width="70" bgcolor="<%=value_c%>" align="center">비밀번호</td>
-				<td width="330" align="left">
-					<input type="password" size="8" maxlength="12" name="passwd" style="ime-mode: inactive;">
 				</td>
 			</tr>
 			<tr>

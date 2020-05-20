@@ -8,169 +8,168 @@ import javax.naming.*;
 import javax.sql.*;
 
 public class BoardDBBean {
-	private static BoardDBBean instance = new BoardDBBean();
-	public static BoardDBBean getInstance() {
-		return instance;
-	}
-	private BoardDBBean() {
-		
-	}
-	
-	private Connection getConnection() throws Exception {
-		Context initCtx = new InitialContext();
-		Context envCtx = (Context)initCtx.lookup("java:comp/env");
-		DataSource ds = (DataSource)envCtx.lookup("jdbc/oracledb");
-//		System.out.println("연결하까마까");
-		return ds.getConnection();
-	}
-	
-	private void closeDBResources(ResultSet rs, Statement stmt, Connection conn) {
-		if(rs != null) {
-			try {
-				rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(stmt != null) {
-			try {
-			stmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(conn != null) {
-			try {
-			conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	private void closeDBResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
-		if(rs != null) {
-			try {
-				rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(pstmt != null) {
-			try {
-			pstmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(conn != null) {
-			try {
-			conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	private void closeDBResources(PreparedStatement pstmt, Connection conn) {
-		if(pstmt != null) {
-			try {
-			pstmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(conn != null) {
-			try {
-			conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	private void closeDBResources(Statement stmt, Connection conn) {
-		if(stmt != null) {
-			try {
-			stmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(conn != null) {
-			try {
-			conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	private void closeDBResources(ResultSet rs, PreparedStatement pstmt) {
-		if(rs != null) {
-			try {
-				rs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if(pstmt != null) {
-			try {
-			pstmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	//boarde 테이블에 글을 추가(insert문) <=writePro.jsp 페이지에서 사용
-	public void insertArticle(BoardDataBean article) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		int num = article.getNum();
-		int ref = article.getRef();
-		int re_step = article.getRe_step();
-		int re_level = article.getRe_level();
-		int number = 0;
-		String sql = "";
-		
-		try {
-			conn = getConnection();
-			if(conn==null) {
-				System.out.println("fail");
-			}else {
-				System.out.println("connection");
-			}
-			sql = "select max(num) from boarde";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				number = rs.getInt(1) + 1;
-			}else {
-				number = 1;
-			}
-			
-			closeDBResources(rs, pstmt);
-			
-			//num 기준으로 댓글과 원본글 구분짓기
-			if(num!=0) { //댓글쓰기
-				sql = "update boarde set re_step = re_step + 1 where ref = ? and re_step > ?";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, ref);
-				pstmt.setInt(2, re_step);
-				pstmt.executeUpdate();
-				re_step = re_step + 1;
-				re_level = re_level + 1;
-			}else { //원본글쓰기
-				ref = number;
-				re_step = 0;
-				re_level = 0;
-			}
-			closeDBResources(rs, pstmt);
-			//hbbaek.m for to add filename
-			sql = "insert into boarde (num, writer, email, subject, passwd, reg_date, ";
-			sql += "ref, re_step, re_level, content, ip, filename) "
-					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, number);
+   private static BoardDBBean instance = new BoardDBBean();
+   public static BoardDBBean getInstance() {
+      return instance;
+   }
+   private BoardDBBean() {
+      
+   }
+   
+   private Connection getConnection() throws Exception {
+      Context initCtx = new InitialContext();
+      Context envCtx = (Context)initCtx.lookup("java:comp/env");
+      DataSource ds = (DataSource)envCtx.lookup("jdbc/oracledb");
+//      System.out.println("연결하까마까");
+      return ds.getConnection();
+   }
+   
+   private void closeDBResources(ResultSet rs, Statement stmt, Connection conn) {
+      if(rs != null) {
+         try {
+            rs.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(stmt != null) {
+         try {
+         stmt.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(conn != null) {
+         try {
+         conn.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   private void closeDBResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
+      if(rs != null) {
+         try {
+            rs.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(pstmt != null) {
+         try {
+         pstmt.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(conn != null) {
+         try {
+         conn.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   private void closeDBResources(PreparedStatement pstmt, Connection conn) {
+      if(pstmt != null) {
+         try {
+         pstmt.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(conn != null) {
+         try {
+         conn.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   private void closeDBResources(Statement stmt, Connection conn) {
+      if(stmt != null) {
+         try {
+         stmt.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(conn != null) {
+         try {
+         conn.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   private void closeDBResources(ResultSet rs, PreparedStatement pstmt) {
+      if(rs != null) {
+         try {
+            rs.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      if(pstmt != null) {
+         try {
+         pstmt.close();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   
+   //boarde 테이블에 글을 추가(insert문) <=writePro.jsp 페이지에서 사용
+   public void insertArticle(BoardDataBean article) throws Exception {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      int num = article.getNum();
+      int ref = article.getRef();
+      int re_step = article.getRe_step();
+      int re_level = article.getRe_level();
+      int number = 0;
+      String sql = "";
+      
+      try {
+         conn = getConnection();
+         if(conn==null) {
+            System.out.println("fail");
+         }else {
+            System.out.println("connection");
+         }
+         sql = "select max(num) from boarde";
+         pstmt = conn.prepareStatement(sql);
+         rs = pstmt.executeQuery();
+         if(rs.next()) {
+            number = rs.getInt(1) + 1;
+         }else {
+            number = 1;
+         }
+         
+         closeDBResources(rs, pstmt);
+         
+         //num 기준으로 댓글과 원본글 구분짓기
+         if(num!=0) { //댓글쓰기
+            sql = "update boarde set re_step = re_step + 1 where ref = ? and re_step > ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, ref);
+            pstmt.setInt(2, re_step);
+            pstmt.executeUpdate();
+            re_step = re_step + 1;
+            re_level = re_level + 1;
+         }else { //원본글쓰기
+            ref = number;
+            re_step = 0;
+            re_level = 0;
+         }
+         closeDBResources(rs, pstmt);
+         //hbbaek.m for add filename
+         sql = "insert into boarde (num, writer, email, subject, passwd, reg_date, ";
+         sql += "ref, re_step, re_level, content, ip, filename) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setInt(1, number);
             pstmt.setString(2, article.getWriter());
             pstmt.setString(3, article.getEmail());
             pstmt.setString(4, article.getSubject());

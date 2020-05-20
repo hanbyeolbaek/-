@@ -6,6 +6,7 @@
 <%@ page import = "java.text.SimpleDateFormat" %>
 <%@ include file="color.jspf"%>
 
+
 <%!
     int pageSize = 10;
     SimpleDateFormat sdf = 
@@ -45,19 +46,27 @@
 <head>
 <link href="style.css?after" rel="stylesheet" type="text/css">
 <title>게시판</title>
+	<!-- hbbaek.a for nav style -->
+	<style type="text/css">
+         /* 기본 설정*/
+         a{text-decoration:none; color:#000000;}         
+         a:hover{color:#ff0000;}                    
+         
+         /* nav tag */
+         nav ul{padding-top:10px;}
+         nav ul li {
+            display:inline;
+            border-left:1px solid #999;
+            font:bold 12px Dotum;
+            padding:0 10px;
+        }
+         nav ul li:first-child{border-left:none;}  
+    </style>
 </head>
 <body bgcolor="<%=bodyback_c%>">
+<!-- hbbaek.a for nav -->
+<%@include file ="nav.jsp" %>
 <p>글목록(전체 글:<%=count%>)</p>
-
-<div style="position: relative; width: 624; height: 23; margin-left:auto; margin-right:auto;">
-	<table style="position: absolute; left: 0;">
-	  <tr>
-	    <td align="right" bgcolor="<%=value_c%>">
-	       <a href="writeForm.do">글쓰기</a>
-	    </td>
-	  </tr>
-	</table>
-</div>
 
 <% if (count == 0) { %>
 
