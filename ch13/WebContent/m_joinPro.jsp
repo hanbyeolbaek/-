@@ -19,9 +19,9 @@
 %>
 		<script type="text/javascript">      
          	alert("회원가입이 성공적으로 완료되었습니다. 로그인해주세요.");
-         	history.go(-1);
+         	//hbbaek.m for 로그인으로 이동
+         	location.href='login.du';
    		</script>
-		<meta http-equiv="Refresh" content="0;url=login.do">
 <%
 	}else{
 %>

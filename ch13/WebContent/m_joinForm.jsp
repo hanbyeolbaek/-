@@ -5,11 +5,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MEMBER SIGN UP</title>
+<title>게시판</title>
 <link href="style.css?after" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="<%=bodyback_c%>">
-	<form name="joinform" action="joinPro.do" method="post">
+	<form name="joinform" action="joinPro.du" method="post">
 		<table border=1 style="margin-left:auto; margin-right:auto;">
 			<tr>
 				<td colspan="2" align="center"><b><font size=5>SIGN UP</font></b></td>

@@ -8,9 +8,27 @@
 <meta charset="UTF-8">
 <title>게시판</title>
 <link href="style.css?after" rel="stylesheet" type="text/css">
+	<!-- hbbaek.a for nav style -->
+	<style type="text/css">
+         /* 기본 설정*/
+         a{text-decoration:none; color:#000000;}         
+         a:hover{color:#ff0000;}                    
+         
+         /* nav tag */
+         nav ul{padding-top:10px;}
+         nav ul li {
+            display:inline;
+            border-left:1px solid #999;
+            font:bold 12px Dotum;
+            padding:0 10px;
+        }
+         nav ul li:first-child{border-left:none;}  
+    </style>
 <script type="text/javascript" src="script.js"></script>
 </head>
 <body bgcolor="<%=bodyback_c%>">
+	<!-- hbbaek.a for nav -->
+	<%@include file ="nav.jsp" %>
 <%
   int num = Integer.parseInt(request.getParameter("num"));
   String pageNum = request.getParameter("pageNum");
@@ -23,6 +41,7 @@
 <br>
 <form method="post" name="writeform" 
 action="updatePro.do?pageNum=<%=pageNum%>" onsubmit="return writeSave()" enctype="multipart/form-data">
+<input type="hidden" name="num" value="<%=num%>">
 <table style="margin-left:auto; margin-right:auto;">
   	<tr>
     	<td  width="70"  bgcolor="<%=value_c%>" align="center" >제 목</td>
@@ -69,7 +88,7 @@ action="updatePro.do?pageNum=<%=pageNum%>" onsubmit="return writeSave()" enctype
  </table>
 </form>
 <%
-}catch(Exception e){}%>      
+}catch(Exception e){e.printStackTrace();}%>      
       
 </body>
 </html>

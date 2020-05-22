@@ -4,11 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>°Ô½ÃÆÇ</title>
 </head>
 <body>
 	<script>
-		location.href = 'login.do';
+		location.href = 'login.du';
 	</script>
 </body>
 </html>

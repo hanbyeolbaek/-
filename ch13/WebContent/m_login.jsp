@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MEMBER LOGIN</title>
+<title>게시판</title>
 <link href="style.css?after" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="<%=bodyback_c%>">
@@ -32,7 +32,7 @@ if(request.getAttribute("checkId") !=null){
 	}
 }
 %>   
-	<form name="login" action="loginPro.do" method="post">
+	<form name="login" action="loginPro.du" method="post">
 		<table border=1 style="margin-left:auto; margin-right:auto;">
 			<tr>
 				<td colspan="2" align="center"><b><font size=5>LOGIN</font></b></td>
@@ -48,7 +48,7 @@ if(request.getAttribute("checkId") !=null){
 			<tr>
 				<td colspan="2"  align="center">
 					<input type="submit" value="login">
-					<input type="button" onclick="location.href='joinForm.do'" value="sign up">
+					<input type="button" onclick="location.href='joinForm.du'" value="sign up">
 				</td>
 			</tr>
 		</table>

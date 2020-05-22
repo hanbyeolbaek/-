@@ -1,95 +1,95 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ch13.model.MemberDataBean"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
-<% request.setCharacterEncoding("utf-8"); %>
-
 <%@ page import="java.sql.*"%>
-
-<%
-	String name = "";
-	if (session.getAttribute("name") != null){
-		name = (String)session.getAttribute("name");
-	}else{
-%>
-<!-- 아랫단 실행하지 않고 값을 못받아왔을때 로그인 화면으로 넘어감 -->
-<jsp:forward page="loginForm.jsp" />
-<%
-	}
-%>
+<%@ include file="color.jspf"%>
+<% request.setCharacterEncoding("utf-8"); %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MEMBER MAIN</title>
+<title>게시판</title>
+<link href="style.css?after" rel="stylesheet" type="text/css">
+	<!-- hbbaek.a for nav style -->
+	<style type="text/css">
+         /* 기본 설정*/
+         a{text-decoration:none; color:#000000;}         
+         a:hover{color:#ff0000;}                    
+         
+         /* nav tag */
+         nav ul{padding-top:10px;}
+         nav ul li {
+            display:inline;
+            border-left:1px solid #999;
+            font:bold 12px Dotum;
+            padding:0 10px;
+        }
+         nav ul li:first-child{border-left:none;}  
+    </style>
 </head>
-<body>
-	<h3 align=center>
-		<%=name %>님, 어서오시게!!
-	</h3>
+<body bgcolor="<%=bodyback_c%>">
+	<!-- hbbaek.a for nav -->
+	<%@include file ="nav.jsp" %>
 
 <%
-	if (name.equals("관리자")) {
+	String id = (String)session.getAttribute("id");
+	MemberDataBean art = (MemberDataBean)request.getAttribute("vo");
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
+	if (id.equals("admin")) {
 %>
+	<p>관리자님, 어서오세요.</p>
 	<table style="margin-left:auto; margin-right:auto;">
 		<tr align="center">
 			<td>
-				<input type="button" onclick="location.href='member_list.jsp'" value="member list">
+				<input type="button" onclick="location.href='list.du'" value="회원목록">
 			</td>
 		</tr>
 	</table>
 <%
 	}else{
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		try{
-			String jdbc_driver = "oracle.jdbc.OracleDriver";
-			String db_url  = "jdbc:oracle:thin:@localhost:1521:XE";
-			
-			Class.forName(jdbc_driver);
-			conn = DriverManager.getConnection(db_url, "scott", "tiger");
-			
-			String sql = "select * from member where name = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, name);
-			rs = pstmt.executeQuery();
-			rs.next();
+		int check=0;
 %>
+	<p><%= id %>님의 정보</p>
 	<table border=1 width=300 style="margin-left:auto; margin-right:auto;">
 		<tr align=center>
-			<td>EMAIL:</td>
-			<td><%=rs.getString("email")%></td>
+			<td>아이디</td>
+			<td><%=art.getId()%></td>
 		</tr>
 		<tr align=center>
-			<td>NAME:</td>
-			<td><%=rs.getString("name")%></td>
+			<td>생년월일</td>
+			<td><%=art.getDate_number()%></td>
 		</tr>
 		<tr align=center>
-			<td>DATE:</td>
-			<td><%=rs.getString("time")%></td>
+			<td>이메일</td>
+			<td><%=art.getEmail()%></td>
+		</tr>
+		<tr align=center>
+			<td>주소</td>
+			<td><%=art.getAddress()%></td>
+		</tr>
+		<tr align=center>
+			<td>전화번호</td>
+			<td><%=art.getTel()%></td>
+		</tr>
+		<tr align=center>
+			<td>이름</td>
+			<td><%=art.getName()%></td>
+		</tr>
+		<tr align=center>
+			<td>가입일자</td>
+			<td><%=sdf.format(art.getReg_date())%></td>
 		</tr>
 		<tr align=center>
 			<td colspan=2>
-				<input type="button" onclick="location.href='updateForm.jsp'" value="UPDATE">
-				<input type="button" onclick="location.href='loginForm.jsp'" value="LOGOUT">
+				<input type="button" onclick="location.href='checkPwd.du?check=<%=check %>'" value="정보수정">
+				<% check=1; %>
+				<input type="button" onclick="location.href='checkPwd.du?check=<%=check %>'" value="회원탈퇴">
 			</td>
 		</tr>
 	</table>
-<%
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(rs!=null)
-				try{rs.close();}catch(SQLException sqle){}
-			if(pstmt!=null)
-				try{pstmt.close();}catch(SQLException sqle){}
-			if(conn!=null)
-				try{conn.close();}catch(SQLException sqle){}
-		}
-	}
-%>
+	<%} %>
 </body>
 </html>

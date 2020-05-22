@@ -178,268 +178,285 @@ public class BoardDBBean {
             pstmt.setInt(7, ref);
             pstmt.setInt(8, re_step);
             pstmt.setInt(9, re_level);
-			pstmt.setString(10, article.getContent());
-			pstmt.setString(11, article.getIp());
-			//hbbaek.a for fileUpload
-			pstmt.setString(12, article.getFileName());
-			pstmt.executeUpdate();
-		}catch(Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-	}
-	
-	//boarde 테이블에 저장된 전체 글의 수를 얻어냄(select문) <=list.jsp에서 사용
-	public int getArticleCount() throws Exception {
+         pstmt.setString(10, article.getContent());
+         pstmt.setString(11, article.getIp());
+       //hbbaek.m for add filename
+         pstmt.setString(12, article.getFileName());
+         pstmt.executeUpdate();
+      }catch(Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+   }
+   
+   //boarde 테이블에 저장된 전체 글의 수를 얻어냄(select문) <=list.jsp에서 사용
+   public int getArticleCount() {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      int x = 0;
+      
+      try {
+         conn = getConnection();
+         
+         pstmt = conn.prepareStatement("select count(*) from boarde");
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            x = rs.getInt(1);
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return x;
+   }
+   
+   //글의 목록(복수 개의 글)을 가져옴(select문) <=list.jsp에서 사용
+   public List<BoardDataBean> getArticles(int start, int end) {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      List<BoardDataBean> articleList = null;
+      
+      try {
+         conn = getConnection();
+         
+         //BoardDAO - boardList 메서드 페이징 처리
+         //pstmt = conn.prepareStatement("select * from boarde order by ref desc, re_step asc limit ?,?"); //mysql
+         String sql = "SELECT * "
+        		 + "FROM (SELECT ROWNUM rnum, B.* FROM "
+        		 + " (SELECT * FROM boarde ORDER BY ref desc, re_step asc ) B ) ";
+         sql += " WHERE rnum >= ? and rnum <= ?";
+         //rnum 생성하자마자 조건 체크가 안되기 때문에 위와 같이
+         
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setInt(1, start);
+         pstmt.setInt(2, end);
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            articleList = new ArrayList<BoardDataBean>(end);
+            do {
+               BoardDataBean article = new BoardDataBean();
+               article.setNum(rs.getInt("num"));
+               article.setWriter(rs.getString("writer"));
+               article.setEmail(rs.getString("email"));
+               article.setSubject(rs.getString("subject"));
+               article.setPasswd(rs.getString("passwd"));
+               article.setReg_date(rs.getTimestamp("reg_date"));
+               article.setReadcount(rs.getInt("readcount"));
+               article.setRef(rs.getInt("ref"));
+               article.setRe_step(rs.getInt("re_step"));
+               article.setRe_level(rs.getInt("re_level"));
+               article.setContent(rs.getString("content"));
+               article.setIp(rs.getString("ip"));
+               
+               articleList.add(article);
+            }while(rs.next());
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return articleList;
+   }
+   
+   //글의 내용을 보기(1개의 글)(select문) <=content.jsp 페이지에서 사용
+   public BoardDataBean getArticle(int num) {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      BoardDataBean article = null;
+      
+      try {
+         conn = getConnection();
+         
+         pstmt = conn.prepareStatement("update boarde set readcount = readcount + 1 where num = ?");
+         pstmt.setInt(1, num);
+         pstmt.executeUpdate();
+         
+         pstmt = conn.prepareStatement("select * from boarde where num = ?");
+         pstmt.setInt(1, num);
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            article = new BoardDataBean();
+            article.setNum(rs.getInt("num"));
+            article.setWriter(rs.getString("writer"));
+            article.setEmail(rs.getString("email"));
+            article.setSubject(rs.getString("subject"));
+            article.setPasswd(rs.getString("passwd"));
+            article.setReg_date(rs.getTimestamp("reg_date"));
+            article.setReadcount(rs.getInt("readcount"));
+            article.setRef(rs.getInt("ref"));
+            article.setRe_step(rs.getInt("re_step"));
+            article.setRe_level(rs.getInt("re_level"));
+            article.setContent(rs.getString("content"));
+            article.setIp(rs.getString("ip"));
+            article.setFileName(rs.getString("filename"));
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return article;
+   }
+   
+   //글수정 폼에서 사용할 글의 내용(1개의 글)(select문) <=updateForm.jsp에서 사용
+   public BoardDataBean updateGetArticle(int num) {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      BoardDataBean article = null;
+      
+      try {
+         conn = getConnection();
+         
+         pstmt = conn.prepareStatement("select * from boarde where num = ?");
+         pstmt.setInt(1, num);
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            article = new BoardDataBean();
+            article.setNum(rs.getInt("num"));
+            article.setWriter(rs.getString("writer"));
+            article.setEmail(rs.getString("email"));
+            article.setSubject(rs.getString("subject"));
+            article.setPasswd(rs.getString("passwd"));
+            article.setReg_date(rs.getTimestamp("reg_date"));
+            article.setReadcount(rs.getInt("readcount"));
+            article.setRef(rs.getInt("ref"));
+            article.setRe_step(rs.getInt("re_step"));
+            article.setRe_level(rs.getInt("re_level"));
+            article.setContent(rs.getString("content"));
+            article.setIp(rs.getString("ip"));
+            article.setFileName(rs.getString("filename"));
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return article;
+   }
+   
+   //글수정 처리에서 사용(update문) <=updatePro.jsp에서 사용
+   public int updateArticle(BoardDataBean article) {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      String dbpasswd = "";
+      String sql = "";
+      int x = -1;
+      
+      try {
+         conn = getConnection();
+         
+         pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
+         pstmt.setInt(1, article.getNum());
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            dbpasswd = rs.getString("passwd");
+            if(dbpasswd.equals(article.getPasswd())) {
+               sql = "update boarde set writer = ?, email = ?, subject = ?, passwd = ?, "
+               		+ " content = ? where num = ?";
+               pstmt = conn.prepareStatement(sql);
+               
+               pstmt.setString(1, article.getWriter());
+               pstmt.setString(2, article.getEmail());
+               pstmt.setString(3, article.getSubject());
+               pstmt.setString(4, article.getPasswd());
+               pstmt.setString(5, article.getContent());
+               pstmt.setInt(6, article.getNum());
+               pstmt.executeUpdate();
+               
+               x = 1;
+            }else {
+               x = 0;
+            }
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return x;
+   }
+   
+   //글삭제처리시 사용(delete문) <=deletePro.jsp 페이지에서 사용
+   public int deleteArticle(int num, String passwd) {
+      Connection conn = null;
+      PreparedStatement pstmt = null;
+      ResultSet rs = null;
+      
+      String dbpasswd = "";
+      int x = -1;
+      
+      try {
+         conn = getConnection();
+         
+         pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
+         pstmt.setInt(1, num);
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {
+            dbpasswd = rs.getString("passwd");
+            if(dbpasswd.equals(passwd) || passwd.equals("admin")) {
+               pstmt = conn.prepareStatement("delete from boarde where num = ?");
+               pstmt.setInt(1, num);
+               pstmt.executeUpdate();
+               x = 1;
+            }else {
+               x = 0;
+            }
+         }
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }finally {
+         closeDBResources(rs, pstmt, conn);
+      }
+      return x;
+   }
+   
+	//hbbaek.a for 회원정보 바꼈을경우 게시글 정보도 변경
+	public void ChangeBoard(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		int x = 0;
+		String sql ="";
 		
 		try {
 			conn = getConnection();
 			
-			pstmt = conn.prepareStatement("select count(*) from boarde");
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				x = rs.getInt(1);
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-		return x;
-	}
-	
-	//글의 목록(복수 개의 글)을 가져옴(select문) <=list.jsp에서 사용
-	public List<BoardDataBean> getArticles(int start, int end) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		List<BoardDataBean> articleList = null;
-		
-		try {
-			conn = getConnection();
-			
-//			pstmt = conn.prepareStatement("select * from boarde order by ref desc, re_step asc limit ?,?");
-			/*
-			 * String sql = "select * " +
-			 * "from (select rownum rnum, num, writer, email, subject, passwd, " +
-			 * " reg_date, readcount, ref, re_step, re_level, content, ip" +
-			 * " from (select * from boarde order by ref desc, re_step asc ) boarde ) "; sql
-			 * += " where rnum >= ? and rnum <= ?";
-			 */
-			
-			String sql = "select * "
-					+ "from (select rownum rnum, b.* from"
-					+ " (select * from boarde order by ref desc, re_step asc ) b ) ";
-			sql += " where rnum >= ? and rnum <= ?";
-			
+			sql = "select * from member where id=?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, start-1);
-			pstmt.setInt(2, end);
+			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				articleList = new ArrayList<BoardDataBean>(end);
-				do {
-					BoardDataBean article = new BoardDataBean();
-					article.setNum(rs.getInt("num"));
-					article.setWriter(rs.getString("writer"));
-					article.setEmail(rs.getString("email"));
-					article.setSubject(rs.getString("subject"));
-					article.setPasswd(rs.getString("passwd"));
-					article.setReg_date(rs.getTimestamp("reg_date"));
-					article.setReadcount(rs.getInt("readcount"));
-					article.setRef(rs.getInt("ref"));
-					article.setRe_step(rs.getInt("re_step"));
-					article.setRe_level(rs.getInt("re_level"));
-					article.setContent(rs.getString("content"));
-					article.setIp(rs.getString("ip"));
-					//hbbaek.a for fileUpload
-					article.setFileName(rs.getString("filename"));
-					
-					articleList.add(article);
-				}while(rs.next());
+				sql = "update boarde set email=?, passwd=? where writer=?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, rs.getString("email"));
+				pstmt.setString(2, rs.getString("passwd"));
+				pstmt.setString(3, rs.getString("id"));
+				pstmt.executeUpdate();
 			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
 		}finally {
 			closeDBResources(rs, pstmt, conn);
 		}
-		return articleList;
-	}
-	
-	//글의 내용을 보기(1개의 글)(select문) <=content.jsp 페이지에서 사용
-	public BoardDataBean getArticle(int num) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		BoardDataBean article = null;
-		
-		try {
-			conn = getConnection();
-			
-			pstmt = conn.prepareStatement("update boarde set readcount=readcount+1 WHERE num=?");
-			pstmt.setInt(1, num);
-			pstmt.executeUpdate();
-			
-			pstmt = conn.prepareStatement("select * from boarde where num=?");
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				article = new BoardDataBean();
-				article.setNum(rs.getInt("num"));
-				article.setWriter(rs.getString("writer"));
-				article.setEmail(rs.getString("email"));
-				article.setSubject(rs.getString("subject"));
-				article.setPasswd(rs.getString("passwd"));
-				article.setReg_date(rs.getTimestamp("reg_date"));
-				article.setReadcount(rs.getInt("readcount"));
-				article.setRef(rs.getInt("ref"));
-				article.setRe_step(rs.getInt("re_step"));
-				article.setRe_level(rs.getInt("re_level"));
-				article.setContent(rs.getString("content"));
-				article.setIp(rs.getString("ip"));
-				//hbbaek.a for fileUpload
-				article.setFileName(rs.getString("filename"));
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-		return article;
-	}
-	
-	//글수정 폼에서 사용할 글의 내용(1개의 글)(select문) <=updateForm.jsp에서 사용
-	public BoardDataBean updateGetArticle(int num) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		BoardDataBean article = null;
-		
-		try {
-			conn = getConnection();
-			
-			pstmt = conn.prepareStatement("select * from boarde where num = ?");
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				article = new BoardDataBean();
-				article.setNum(rs.getInt("num"));
-				article.setWriter(rs.getString("writer"));
-				article.setEmail(rs.getString("email"));
-				article.setSubject(rs.getString("subject"));
-				article.setPasswd(rs.getString("passwd"));
-				article.setReg_date(rs.getTimestamp("reg_date"));
-				article.setReadcount(rs.getInt("readcount"));
-				article.setRef(rs.getInt("ref"));
-				article.setRe_step(rs.getInt("re_step"));
-				article.setRe_level(rs.getInt("re_level"));
-				article.setContent(rs.getString("content"));
-				article.setIp(rs.getString("ip"));
-				//hbbaek.a for fileUpload
-				article.setFileName(rs.getString("filename"));
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-		return article;
-	}
-	
-	//글수정 처리에서 사용(update문) <=updatePro.jsp에서 사용
-	public int updateArticle(BoardDataBean article) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		String dbpasswd = "";
-		String sql = "";
-		int x = -1;
-		
-		try {
-			conn = getConnection();
-
-			pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
-			pstmt.setInt(1, article.getNum());
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				dbpasswd = rs.getString("passwd");
-				if(dbpasswd.equals(article.getPasswd())) {
-					//hbbaek.m for fileUpload
-					//hbbaek.m for updateDate
-					sql = "update boarde set writer = ?, email = ?, subject = ?, passwd = ?, content = ?, filename = ? where num = ?";
-					pstmt = conn.prepareStatement(sql);
-					
-					pstmt.setString(1, article.getWriter());
-					pstmt.setString(2, article.getEmail());
-					pstmt.setString(3, article.getSubject());
-					pstmt.setString(4, article.getPasswd());
-					pstmt.setString(5, article.getContent());
-					//hbbaek.a for fileUpload
-					pstmt.setString(6, article.getFileName());
-					//hbbaek.a for updateDate
-					pstmt.setInt(7, article.getNum());
-					pstmt.executeUpdate();
-					
-					x = 1;
-				}else {
-					x = 0;
-				}
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-		return x;
-	}
-	
-	//글삭제처리시 사용(delete문) <=deletePro.jsp 페이지에서 사용
-	public int deleteArticle(int num, String passwd) throws Exception {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		String dbpasswd = "";
-		int x = -1;
-		
-		try {
-			conn = getConnection();
-			
-			pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				dbpasswd = rs.getString("passwd");
-				if(dbpasswd.equals(passwd)) {
-					pstmt = conn.prepareStatement("delete from boarde where num = ?");
-					pstmt.setInt(1, num);
-					pstmt.executeUpdate();
-					x = 1;
-				}else {
-					x = 0;
-				}
-			}
-		}catch (Exception ex) {
-			ex.printStackTrace();
-		}finally {
-			closeDBResources(rs, pstmt, conn);
-		}
-		return x;
 	}
 }

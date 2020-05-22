@@ -28,11 +28,28 @@
 <meta charset="UTF-8">
 <title>게시판</title>
 <link href="style.css?after" rel="stylesheet" type="text/css">
+	<!-- hbbaek.a for nav style -->
+	<style type="text/css">
+         /* 기본 설정*/
+         a{text-decoration:none; color:#000000;}         
+         a:hover{color:#ff0000;}                    
+         
+         /* nav tag */
+         nav ul{padding-top:10px;}
+         nav ul li {
+            display:inline;
+            border-left:1px solid #999;
+            font:bold 12px Dotum;
+            padding:0 10px;
+        }
+         nav ul li:first-child{border-left:none;}  
+    </style>
 <script type="text/javascript" src="script.js"></script>
 </head>
 <body bgcolor="<%=bodyback_c %>">
+	<!-- hbbaek.a for nav -->
+	<%@include file ="nav.jsp" %>
 	<p>글쓰기</p>
-
 	<form method="post" action="writePro.do" enctype="multipart/form-data">
 		<input type="hidden" name="num" value="<%=num%>">
 		<input type="hidden" name="ref" value="<%=ref%>">

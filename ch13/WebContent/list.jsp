@@ -78,6 +78,7 @@
 </table>
 
 <% } else {%>
+
 <table style="margin-left:auto; margin-right:auto;"> 
     <tr height="30" bgcolor="<%=value_c%>"> 
       <td align="center"  width="50"  >번 호</td> 

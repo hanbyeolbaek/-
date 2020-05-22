@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MEMBER LOGIN PROCESS</title>
+<title>게시판</title>
 </head>
 <body>
 <%

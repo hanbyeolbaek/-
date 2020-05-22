@@ -9,10 +9,10 @@
       <a href="writeForm.do">글쓰기</a>
     </li>
     <li>
-      <a href="main.do">회원정보</a>
+      <a href="main.du">회원정보</a>
     </li>
     <li>
-      <a href="login.do">로그아웃</a>
+      <a href="login.du">로그아웃</a>
     </li>
   </ul>
 </nav>

@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
@@ -17,12 +20,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.Session;
 
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import ch13.model.BoardDBBean;
 import ch13.model.BoardDataBean;
+import ch13.model.MemberDBBean;
 import ch13.model.MemberDataBean;
 
 /**
@@ -98,11 +103,18 @@ public class BoardServlet extends HttpServlet {
 					filename = multi.getFilesystemName(name);
 				}
 				
+				//hbbaek.m for login한 사람만 글쓰기
+				String id = (String)request.getSession().getAttribute("id");
+				MemberDBBean mDbPro = MemberDBBean.getInstance();
+				MemberDataBean mArt = mDbPro.MainIdPw(id);
+				
 				BoardDataBean art = new BoardDataBean();
 				
-				//hbbaek.m for login한 사람만 글쓰기
 				art.setNum(Integer.parseInt(multi.getParameter("num")));
+				art.setWriter(mArt.getId());
+				art.setEmail(mArt.getEmail());
 				art.setSubject(multi.getParameter("subject"));
+				art.setPasswd(mArt.getPasswd());
 				art.setContent(multi.getParameter("content"));
 				art.setRef(Integer.parseInt(multi.getParameter("ref")));
 				art.setRe_step(Integer.parseInt(multi.getParameter("re_step")));
@@ -232,74 +244,9 @@ public class BoardServlet extends HttpServlet {
 			viewPage = "deletePro.jsp";
 		}
 		
-		//hbbaek.a for login
-		if(action.equals("login.do")) {
-			viewPage = "m_login.jsp";
-		}
-	
-		if(action.contentEquals("loginPro.do")) {
-				String id = request.getParameter("id");
-				String passwd = request.getParameter("passwd");
-				response.setContentType("text/html;charset=UTF-8");
-				try {
-					BoardDBBean dbPro = BoardDBBean.getInstance();
-					String pwd = dbPro.checkIdPw(id);
-					if (pwd == null) {
-						// id를 찾을 수 없음
-						request.setAttribute("checkId", -1);
-						viewPage = "m_login.jsp";
-					} else if (passwd.equals(pwd)) {
-						//id, passwd 동일, 로그인 성공
-						request.setAttribute("checkId", 0);
-						request.getSession().setAttribute("id", id);
-						viewPage = "list.jsp";
-					} else {
-						//passwd가 틀림
-						request.setAttribute("checkId", 1);
-						viewPage = "m_login.jsp";
-						/*
-						 * out.print("<script type=text/javascript>");
-						 * out.print("alert('아이디와 패스워드가 일치하지 않습니다."); out.print("history.back()");
-						 * out.print("</script>");
-						 */
-					}
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-		
-		if(action.equals("joinForm.do")) {
-			viewPage = "m_joinForm.jsp";
-		}
-		
-		if(action.equals("joinPro.do")) {
-			int check = 0;
-			try {
-				MemberDataBean art = new MemberDataBean();
-				
-				art.setId(request.getParameter("id"));
-				art.setPasswd(request.getParameter("passwd"));
-				art.setDate_number(request.getParameter("date_num"));
-				art.setEmail(request.getParameter("email"));
-				art.setAddress(request.getParameter("address"));
-				art.setTel(request.getParameter("tel"));
-				art.setName(request.getParameter("name"));
-				art.setReg_date(new Timestamp(System.currentTimeMillis()));
-
-				BoardDBBean dbPro = BoardDBBean.getInstance();
-				check = dbPro.joinIdPw(art);
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-			request.setAttribute("check", check);
-			viewPage = "m_joinPro.jsp";
-		}
-		
-		if(action.equals("main.do")) {
-			viewPage = "m_main.jsp";
-		}
-		
 		RequestDispatcher rDis = request.getRequestDispatcher(viewPage);
 		rDis.forward(request, response); //forward : 가지고 온 것들 그대로 전달
 	}
+	
+
 }
