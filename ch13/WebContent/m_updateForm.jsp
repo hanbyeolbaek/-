@@ -8,11 +8,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>°Ô½ÃÆÇ</title>
+<title>ê²Œì‹œíŒ</title>
 <link href="style.css?after" rel="stylesheet" type="text/css">
 	<!-- hbbaek.a for nav style -->
 	<style type="text/css">
-         /* ±âº» ¼³Á¤*/
+         /* ê¸°ë³¸ ì„¤ì •*/
          a{text-decoration:none; color:#000000;}         
          a:hover{color:#ff0000;}                    
          
@@ -33,35 +33,36 @@
 	<form name="updateform" method="post" action="updatePro.du">
 		<table border=1 style="margin-left:auto; margin-right:auto;">
 			<tr>
-				<td colspan="2" align="center"><b><font size=5><%=id %>´ÔÀÇ Á¤º¸¼öÁ¤</font></b></td>
+				<td colspan="2" align="center"><b><font size=5><%=id %>ë‹˜ì˜ ì •ë³´ìˆ˜ì •</font></b></td>
 			</tr>
 			<tr>
-				<td>ºñ¹Ð¹øÈ£</td>
+				<td>ë¹„ë°€ë²ˆí˜¸</td>
 				<td><input type="password" name="passwd"></td>
 			</tr>
 			<tr>
-				<td>»ý³â¿ùÀÏ</td>
+				<td>ìƒë…„ì›”ì¼</td>
 				<td><input type="date" name="date_num"></td>
 			</tr>
 			<tr>
-				<td>ÀÌ¸ÞÀÏ</td>
+				<td>ì´ë©”ì¼</td>
 				<td><input type="email" name="email"></td>
 			</tr>
 			<tr>
-				<td>ÁÖ¼Ò</td>
+				<td>ì£¼ì†Œ</td>
 				<td><input type="text" name="address"></td>
 			</tr>
 			<tr>
-				<td>ÀüÈ­¹øÈ£</td>
+				<td>ì „í™”ë²ˆí˜¸</td>
 				<td><input type="tel" name="tel"></td>
 			</tr>
 			<tr>
-				<td>ÀÌ¸§</td>
+				<td>ì´ë¦„</td>
 				<td><input type="text" name="name"></td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center">
-					<input type="submit" value="Á¤º¸¼öÁ¤">
+					<input type="submit" value="ì •ë³´ìˆ˜ì •">
+					<input type="button" onclick="location.href='main.du'" value="ì·¨ì†Œ">
 				</td>
 			</tr>
 		</table>

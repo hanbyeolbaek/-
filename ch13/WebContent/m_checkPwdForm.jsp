@@ -33,6 +33,7 @@
  			<tr height="30">
     			<td align=center>
       				<input type="submit" value="확인" >
+      				<input type="button" onclick="location.href='main.du'" value="취소">
    				</td>
  			</tr>  
 		</table> 

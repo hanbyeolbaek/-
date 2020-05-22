@@ -37,12 +37,15 @@
       BoardDataBean article =  dbPro.updateGetArticle(num);
 %>
 
-<p>글수정</p>
-<br>
 <form method="post" name="writeform" 
 action="updatePro.do?pageNum=<%=pageNum%>" onsubmit="return writeSave()" enctype="multipart/form-data">
 <input type="hidden" name="num" value="<%=num%>">
 <table style="margin-left:auto; margin-right:auto;">
+	<tr>
+		<td align="center" colspan="2" bgcolor="<%=value_c%>">
+			<p>글수정</p>
+		</td>
+	</tr>
   	<tr>
     	<td  width="70"  bgcolor="<%=value_c%>" align="center" >제 목</td>
     	<td align="left" width="330">

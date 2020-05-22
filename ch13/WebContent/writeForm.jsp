@@ -49,7 +49,6 @@
 <body bgcolor="<%=bodyback_c %>">
 	<!-- hbbaek.a for nav -->
 	<%@include file ="nav.jsp" %>
-	<p>글쓰기</p>
 	<form method="post" action="writePro.do" enctype="multipart/form-data">
 		<input type="hidden" name="num" value="<%=num%>">
 		<input type="hidden" name="ref" value="<%=ref%>">
@@ -57,8 +56,8 @@
 		<input type="hidden" name="re_level" value="<%=re_level%>">
 		<table style="margin-left:auto; margin-right:auto;">
 			<tr>
-				<td align="right" colspan="2" bgcolor="<%=value_c%>">
-					<a href="#"> 글목록</a>
+				<td align="center" colspan="2" bgcolor="<%=value_c%>">
+					<p> 글쓰기</p>
 				</td>
 			</tr>
 			<tr>

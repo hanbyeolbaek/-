@@ -104,8 +104,6 @@
 					<input type="button" value="답글쓰기"
 					onclick="document.location.href='writeForm.do?num=<%=num%>&ref=<%=ref%>&re_step=<%=re_step%>&re_level=<%=re_level%>'">
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="button" value="글목록"
-					onclick="document.location.href='list.do?pageNum=<%=pageNum%>'">
 				</td>
 			</tr>
 		 </table>
