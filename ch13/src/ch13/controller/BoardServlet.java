@@ -231,11 +231,13 @@ public class BoardServlet extends HttpServlet {
 			int num = Integer.parseInt(request.getParameter("num"));
 			String pageNum = request.getParameter("pageNum");
 			String passwd = request.getParameter("passwd");
+			String id = (String)request.getSession().getAttribute("id");
+			System.out.println(id);
 			int check = 0;
 			
 			try {
 				BoardDBBean dbPro = BoardDBBean.getInstance(); 
-				check = dbPro.deleteArticle(num, passwd);
+				check = dbPro.deleteArticle(num, passwd, id);
 			}catch (Exception ex) {
 				ex.printStackTrace();
 			}

@@ -356,19 +356,25 @@ public class BoardDBBean {
       ResultSet rs = null;
       
       String dbpasswd = "";
+      //hbbaek.a for 글수정 시 비밀번호 같은 경우 방지
+      String dbwriter = "";
       String sql = "";
       int x = -1;
       
       try {
          conn = getConnection();
          
-         pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
+         //hbbaek.m for 글수정 시 비밀번호 같은 경우 방지
+         pstmt = conn.prepareStatement("select writer, passwd from boarde where num = ?");
          pstmt.setInt(1, article.getNum());
          rs = pstmt.executeQuery();
          
          if(rs.next()) {
             dbpasswd = rs.getString("passwd");
-            if(dbpasswd.equals(article.getPasswd())) {
+            //hbbaek.a for 글수정 시 비밀번호 같은 경우 방지
+            dbwriter = rs.getString("writer");
+            //hbbaek.m for 글수정 시 비밀번호 같은 경우 방지
+            if((dbwriter.equals(article.getWriter()) && dbpasswd.equals(article.getPasswd()))) {
                sql = "update boarde set writer = ?, email = ?, subject = ?, passwd = ?, "
                		+ " content = ? where num = ?";
                pstmt = conn.prepareStatement(sql);
@@ -395,24 +401,32 @@ public class BoardDBBean {
    }
    
    //글삭제처리시 사용(delete문) <=deletePro.jsp 페이지에서 사용
-   public int deleteArticle(int num, String passwd) {
+   public int deleteArticle(int num, String passwd, String id) {
       Connection conn = null;
       PreparedStatement pstmt = null;
       ResultSet rs = null;
       
       String dbpasswd = "";
+      //hbbaek.a for 삭제 시 비밀번호 같은 경우 방지
+      String dbwriter = "";
       int x = -1;
       
       try {
          conn = getConnection();
          
-         pstmt = conn.prepareStatement("select passwd from boarde where num = ?");
+         //hbbaek.m for 글삭제 시 비밀번호 같은 경우 방지
+         pstmt = conn.prepareStatement("select writer, passwd from boarde where num = ?");
          pstmt.setInt(1, num);
          rs = pstmt.executeQuery();
          
          if(rs.next()) {
             dbpasswd = rs.getString("passwd");
-            if(dbpasswd.equals(passwd) || passwd.equals("admin")) {
+            //hbbaek.a for 삭제 시 비밀번호 같은 경우 방지
+            dbwriter = rs.getString("writer");
+            System.out.println(dbwriter);
+            
+            //hbbaek.m for 삭제 시 비밀번호 같은 경우 방지
+            if((dbwriter.equals(id) && dbpasswd.equals(passwd)) || (id.equals("admin") && passwd.equals("admin"))) {
                pstmt = conn.prepareStatement("delete from boarde where num = ?");
                pstmt.setInt(1, num);
                pstmt.executeUpdate();
