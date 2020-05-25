@@ -11,27 +11,6 @@
 <link href="style.css?after" rel="stylesheet" type="text/css">
 </head>
 <body bgcolor="<%=bodyback_c%>">
-<%
-String id = (String)session.getAttribute("id");
-if(request.getAttribute("checkId") !=null){
-	
-	int checkId = (int)request.getAttribute("checkId");
-	if(checkId == -1){
-		%>
-		<script>
-		alert("해당 아이디를 찾을 수 없습니다.");
-		</script>
-		<% 
-	}
-	else if (checkId == 1) {
-		%>
-		<script>
-		alert("아이디와 패스워드가 일치하지 않습니다.");
-		</script>
-		<%
-	}
-}
-%>   
 	<form name="login" action="loginPro.du" method="post">
 		<table border=1 style="margin-left:auto; margin-right:auto;">
 			<tr>
